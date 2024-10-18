@@ -22,7 +22,6 @@ Adapted from huggingface/transformers: https://github.com/huggingface/transforme
 import logging
 import math
 import os
-import random
 import sys
 from itertools import chain
 
@@ -37,6 +36,7 @@ from transformers import (AutoModelForCausalLM, AutoTokenizer, Trainer,
 from transformers.testing_utils import CaptureLogger
 from transformers.trainer_utils import get_last_checkpoint
 from utils import StarChatArgumentParser, hf_login
+import secrets
 
 logger = logging.getLogger(__name__)
 
@@ -109,7 +109,7 @@ def main():
         f"Training on the following datasets and their proportions: {[split + ' : ' + str(dset.num_rows) for split, dset in raw_datasets.items()]}"
     )
     with training_args.main_process_first(desc="Log a few random samples from the raw training set"):
-        for index in random.sample(range(len(raw_datasets["train"])), 3):
+        for index in secrets.SystemRandom().sample(range(len(raw_datasets["train"])), 3):
             logger.info(f"Sample {index} of the raw training set:\n\n{raw_datasets['train'][index]['messages']}")
 
     #########################
@@ -139,7 +139,7 @@ def main():
     text_column_name = "text" if "text" in column_names else column_names[0]
 
     with training_args.main_process_first(desc="Log a few random samples from the training set"):
-        for index in random.sample(range(len(raw_datasets["train"])), 3):
+        for index in secrets.SystemRandom().sample(range(len(raw_datasets["train"])), 3):
             logger.info(f"Sample {index} of the raw training set:\n\n{raw_datasets['train'][index]['text']}")
 
     # since this will be pickled to avoid _LazyModule error in Hasher force logger loading before tokenize_function
